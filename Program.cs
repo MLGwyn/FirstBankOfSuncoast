@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using CsvHelper;
 
 namespace FirstBankOfSuncoast
 {
@@ -9,7 +12,7 @@ namespace FirstBankOfSuncoast
         public string Account { get; set; }
         public string Action { get; set; }
         public decimal Amount { get; set; }
-        private DateTime TransTime { get; } = DateTime.Now;
+        public string TransTime { get; set; } = DateTime.Now.ToString();
         public void CompletedTrans()
         {
             Console.WriteLine($"{TransTime} {Action} in the amount of {Amount} dollars in your {Account} account. ");
@@ -78,11 +81,16 @@ namespace FirstBankOfSuncoast
             }
             var keepGoing = true;
             var transactions = new List<Transactions>();
+            LoadTransactions();
             DisplayGreeting();
             while (keepGoing)
             {
                 var account = PromptForAccount();
-                var choice = PromptForString("What would you like to do?\n(D)eposit\n(W)ithdraw\n(S)how Transactions\n(V)iew Balance ");
+                var choice = PromptForString("What would you like to do?\n(D)eposit\n(W)ithdraw\n(S)how Transactions\n(V)iew Balance\n(E)xit ");
+                if (choice == "E")
+                {
+                    break;
+                }
                 switch (choice)
                 {
                     case "D":
@@ -95,6 +103,7 @@ namespace FirstBankOfSuncoast
                         transact.CompletedTrans();
                         var balance = ComputeBalance(transactions, account);
                         Console.WriteLine($"Your {account} balance is {balance} dollars. ");
+                        SaveTransactions();
                         break;
                     case "W":
                         balance = ComputeBalance(transactions, account);
@@ -107,6 +116,7 @@ namespace FirstBankOfSuncoast
                             transact.Amount = withAmount;
                             transactions.Add(transact);
                             transact.CompletedTrans();
+                            SaveTransactions();
                         }
                         else
                         {
@@ -155,6 +165,26 @@ namespace FirstBankOfSuncoast
                 }
 
 
+            }
+
+            void LoadTransactions()
+            {
+                // var employees = new List<Employee>();
+                if (File.Exists("transactions.csv"))
+                {
+                    var fileReader = new StreamReader("transactions.csv");
+                    var csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                    transactions = csvReader.GetRecords<Transactions>().ToList();
+                    fileReader.Close();
+                }
+
+            }
+            void SaveTransactions()
+            {
+                var fileWriter = new StreamWriter("transactions.csv");
+                var csvWriter = new CsvWriter(fileWriter, CultureInfo.InvariantCulture);
+                csvWriter.WriteRecords(transactions);
+                fileWriter.Close();
             }
         }
     }
