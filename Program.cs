@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using CsvHelper;
-
 namespace FirstBankOfSuncoast
 {
     class Transactions
@@ -18,7 +17,6 @@ namespace FirstBankOfSuncoast
             Console.WriteLine($"{TransTime} {Action} in the amount of {Amount} dollars in your {Account} account. ");
         }
     }
-
     class Program
     {
         static void Main(string[] args)
@@ -69,7 +67,6 @@ namespace FirstBankOfSuncoast
                     {
                         Console.WriteLine("I'm sorry that is not a valid response. ");
                     }
-
                 }
                 return 0;
             }
@@ -124,7 +121,6 @@ namespace FirstBankOfSuncoast
                         }
                         break;
                     case "S":
-
                         if (account == "Checking")
                         {
                             Console.WriteLine($"-{account} Transactions- ");
@@ -159,14 +155,8 @@ namespace FirstBankOfSuncoast
                     default:
                         Console.WriteLine($"Error. {choice} is not a valid option ☠️");
                         break;
-
-
-
                 }
-
-
             }
-
             void LoadTransactions()
             {
                 // var employees = new List<Employee>();
@@ -177,7 +167,6 @@ namespace FirstBankOfSuncoast
                     transactions = csvReader.GetRecords<Transactions>().ToList();
                     fileReader.Close();
                 }
-
             }
             void SaveTransactions()
             {
