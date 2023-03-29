@@ -83,7 +83,7 @@ namespace FirstBankOfSuncoast
             while (keepGoing)
             {
                 var account = PromptForAccount();
-                var choice = PromptForString("What would you like to do?\n(D)eposit\n(W)ithdraw\n(S)how Transactions\n(V)iew Balance\n(E)xit ");
+                var choice = PromptForString("What would you like to do?\n(D)eposit\n(W)ithdraw\n(T)ransfer Funds\n(S)how Transactions\n(V)iew Balance\n(E)xit ");
                 if (choice == "E")
                 {
                     break;
@@ -118,6 +118,66 @@ namespace FirstBankOfSuncoast
                         else
                         {
                             Console.WriteLine($"I'm sorry. {withAmount} exceeds your {account} balance of {balance} dollars. ");
+                        }
+                        break;
+                    case "T":
+                        if (account == "Checking")
+                        {
+                            balance = ComputeBalance(transactions, account);
+                            var transfAmount = PromptForAmount("How much would you like to transfer to your savings account? ");
+                            if (balance >= transfAmount)
+                            {
+                                var resp = PromptForString($"Are you sure you want to transfer {transfAmount} dollars from {account} into your savings account? [Y/N] ");
+                                if (resp == "Y")
+                                {
+                                    transact = new Transactions();
+                                    transact.Account = account;
+                                    transact.Action = "Withdrawal";
+                                    transact.Amount = transfAmount;
+                                    transactions.Add(transact);
+                                    SaveTransactions();
+                                    var transact2 = new Transactions();
+                                    transact2.Account = "Savings";
+                                    transact2.Action = "Deposit";
+                                    transact2.Amount = transfAmount;
+                                    transactions.Add(transact2);
+                                    SaveTransactions();
+                                    Console.WriteLine($"You have transferred {transfAmount} dollars from your {account} account into your Savings account. ");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"I'm sorry. {transfAmount} exceeds your {account} balance of {balance} dollars. ");
+                            }
+                        }
+                        if (account == "Savings")
+                        {
+                            balance = ComputeBalance(transactions, account);
+                            var transfAmount = PromptForAmount("How much would you like to transfer to your checking account? ");
+                            if (balance >= transfAmount)
+                            {
+                                var resp = PromptForString($"Are you sure you want to transfer {transfAmount} dollars from {account} into your checking account? [Y/N] ");
+                                if (resp == "Y")
+                                {
+                                    transact = new Transactions();
+                                    transact.Account = account;
+                                    transact.Action = "Withdrawal";
+                                    transact.Amount = transfAmount;
+                                    transactions.Add(transact);
+                                    SaveTransactions();
+                                    var transact2 = new Transactions();
+                                    transact2.Account = "Checking";
+                                    transact2.Action = "Deposit";
+                                    transact2.Amount = transfAmount;
+                                    transactions.Add(transact2);
+                                    SaveTransactions();
+                                    Console.WriteLine($"You have transferred {transfAmount} dollars from your {account} account into your checking account. ");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"I'm sorry. {transfAmount} exceeds your {account} balance of {balance} dollars. ");
+                            }
                         }
                         break;
                     case "S":
